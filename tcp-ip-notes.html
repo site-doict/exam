@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TCP/IP Protocol: Final Revision Notes</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1b2433;--mute:#5a6478;--line:#d9dee8;
+--app:#4f46e5;--app-t:#e8e7fd;--trn:#0d9488;--trn-t:#d5f3ef;--int:#d97706;--int-t:#fcebd0;--net:#be3a5c;--net-t:#f9dde5}
+@media(prefers-color-scheme:dark){:root{--bg:#10151f;--card:#18202e;--ink:#e8ecf4;--mute:#9aa5ba;--line:#2a3447;
+--app:#8b85ff;--app-t:#26244f;--trn:#2dd4bf;--trn-t:#10403b;--int:#fbbf24;--int-t:#4a3410;--net:#fb7a9c;--net-t:#4d1c2b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 18px 64px}
+h1{font-size:2rem;line-height:1.2;margin:0 0 8px}
+h2{font-size:1.3rem;margin:44px 0 12px}
+h3{margin:0 0 4px;font-size:1.05rem}
+p{margin:0 0 10px}
+.lead{color:var(--mute);font-size:1.05rem;max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em}
+.stack{display:grid;gap:10px}
+.layer{display:grid;grid-template-columns:44px 1fr;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
+.layer .n{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:1.2rem}
+.layer .b{padding:14px 16px}
+.layer ul{margin:6px 0 0;padding-left:18px;color:var(--mute)}
+.layer li{margin:2px 0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{padding:2px 10px;border-radius:99px;font-size:.85rem}
+.l4 .n{background:var(--app)}.l4 .tag{background:var(--app-t)}
+.l3 .n{background:var(--trn)}.l3 .tag{background:var(--trn-t)}
+.l2 .n{background:var(--int)}.l2 .tag{background:var(--int-t)}
+.l1 .n{background:var(--net)}.l1 .tag{background:var(--net-t)}
+.flow{display:flex;justify-content:center;color:var(--mute);font-size:.9rem}
+.encap{display:flex;gap:0;font-size:.85rem;text-align:center}
+.encap>div{border:2px solid;border-radius:8px;padding:6px;display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.encap .h{padding:6px 8px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.f{border-color:var(--net);background:var(--net-t)}
+.p{border-color:var(--int);background:var(--int-t)}
+.s{border-color:var(--trn);background:var(--trn-t)}
+.d{border-color:var(--app);background:var(--app-t);padding:6px 14px;border:2px solid var(--app);border-radius:6px;font-weight:600;display:flex;align-items:center}
+.cap{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:.85rem;color:var(--mute)}
+.cap i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.95rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--bg);font-weight:600}
+tr:last-child td{border-bottom:0}
+.wrap{overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font:14px system-ui,sans-serif}
+svg .m{fill:var(--mute);font-size:12px}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:8px}
+.qa b{display:block;margin-bottom:2px}
+.trick{border-left:4px solid var(--app);padding:10px 16px;background:var(--card);border-radius:0 8px 8px 0;margin-top:10px}
+@media print{body{background:#fff}.card,.layer,.qa{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+
+<h1>TCP/IP Protocol: final revision notes</h1>
+<p class="lead">TCP/IP is a set of rules (protocols) that lets computers send data to each other across networks, including the internet. It is organised into 4 layers, and each layer does one job.</p>
+
+<h2>1. The 4 layers</h2>
+<p>Sending data: it moves <b>down</b> the layers (top to bottom). Receiving: it moves <b>up</b>.</p>
+
+<div class="stack">
+  <div class="layer l4"><div class="n">4</div><div class="b">
+    <h3>Application layer</h3>
+    <p>What the user sees and uses. Gives network services to programs.</p>
+    <ul><li>Functions: web, email, file transfer, name lookup</li><li>Data unit: <b>Data / message</b></li></ul>
+    <div class="tags"><span class="tag">HTTP</span><span class="tag">HTTPS</span><span class="tag">FTP</span><span class="tag">SMTP</span><span class="tag">DNS</span><span class="tag">DHCP</span><span class="tag">SSH</span></div>
+  </div></div>
+  <div class="flow">&#8595;</div>
+  <div class="layer l3"><div class="n">3</div><div class="b">
+    <h3>Transport layer</h3>
+    <p>Process-to-process delivery between two hosts.</p>
+    <ul><li>Functions: segmentation, port numbers, flow control, error control</li><li>Data unit: <b>Segment</b> (TCP) / <b>Datagram</b> (UDP)</li></ul>
+    <div class="tags"><span class="tag">TCP</span><span class="tag">UDP</span></div>
+  </div></div>
+  <div class="flow">&#8595;</div>
+  <div class="layer l2"><div class="n">2</div><div class="b">
+    <h3>Internet layer</h3>
+    <p>Host-to-host delivery using logical (IP) addresses.</p>
+    <ul><li>Functions: IP addressing, routing, fragmentation</li><li>Data unit: <b>Packet</b> &nbsp;|&nbsp; Device: <b>Router</b></li></ul>
+    <div class="tags"><span class="tag">IP (v4/v6)</span><span class="tag">ICMP</span><span class="tag">ARP</span><span class="tag">IGMP</span></div>
+  </div></div>
+  <div class="flow">&#8595;</div>
+  <div class="layer l1"><div class="n">1</div><div class="b">
+    <h3>Network access layer (link layer)</h3>
+    <p>Node-to-node delivery on the same network, over the physical medium.</p>
+    <ul><li>Functions: MAC addressing, framing, error detection, signals</li><li>Data unit: <b>Frame</b> &nbsp;|&nbsp; Devices: <b>Switch, NIC, cable</b></li></ul>
+    <div class="tags"><span class="tag">Ethernet</span><span class="tag">Wi-Fi</span><span class="tag">PPP</span></div>
+  </div></div>
+</div>
+
+<h2>2. Encapsulation (how data is wrapped)</h2>
+<p>Each layer adds its own header on the way down. The receiver removes them in reverse order (decapsulation).</p>
+<div class="card">
+  <div class="wrap">
+  <div class="encap" style="min-width:540px">
+    <div class="f" style="flex:1"><span class="h">Frame header</span>
+      <div class="p" style="flex:1"><span class="h">IP header</span>
+        <div class="s" style="flex:1"><span class="h">TCP header</span><span class="d">Data</span></div>
+      </div>
+      <span class="h">Trailer</span>
+    </div>
+  </div>
+  </div>
+  <div class="cap">
+    <span><i style="background:var(--app)"></i>Application: data</span>
+    <span><i style="background:var(--trn)"></i>Transport: segment</span>
+    <span><i style="background:var(--int)"></i>Internet: packet</span>
+    <span><i style="background:var(--net)"></i>Network access: frame</span>
+  </div>
+</div>
+
+<h2>3. Summary table</h2>
+<div class="wrap"><table>
+<tr><th>Layer</th><th>Data unit</th><th>Address</th><th>Protocols</th><th>Device</th></tr>
+<tr><td>Application</td><td>Data</td><td>-</td><td>HTTP, FTP, SMTP, DNS</td><td>-</td></tr>
+<tr><td>Transport</td><td>Segment</td><td>Port number</td><td>TCP, UDP</td><td>-</td></tr>
+<tr><td>Internet</td><td>Packet</td><td>IP address</td><td>IP, ICMP, ARP</td><td>Router</td></tr>
+<tr><td>Network access</td><td>Frame</td><td>MAC address</td><td>Ethernet, Wi-Fi</td><td>Switch, NIC</td></tr>
+</table></div>
+
+<h2>4. TCP vs UDP</h2>
+<div class="two">
+  <div class="card"><h3>TCP</h3>
+    <p>Connection-oriented, reliable, ordered. Resends lost data. Slower.</p>
+    <p class="mono">Used for: web, email, file download</p></div>
+  <div class="card"><h3>UDP</h3>
+    <p>Connectionless, no guarantee, no ordering. Very fast.</p>
+    <p class="mono">Used for: video calls, gaming, streaming</p></div>
+</div>
+
+<h2>5. TCP 3-way handshake</h2>
+<div class="card">
+<svg viewBox="0 0 380 210" role="img" aria-label="Client sends SYN, server replies SYN-ACK, client sends ACK">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+  <text x="50" y="22" text-anchor="middle" style="font-weight:600">Client</text>
+  <text x="330" y="22" text-anchor="middle" style="font-weight:600">Server</text>
+  <line x1="50" y1="34" x2="50" y2="200" stroke="var(--line)" stroke-width="2"/>
+  <line x1="330" y1="34" x2="330" y2="200" stroke="var(--line)" stroke-width="2"/>
+  <line x1="52" y1="62" x2="326" y2="86" stroke="var(--app)" stroke-width="2" marker-end="url(#a)"/>
+  <text x="190" y="62" text-anchor="middle" style="font-weight:600">1. SYN</text>
+  <line x1="328" y1="116" x2="54" y2="140" stroke="var(--trn)" stroke-width="2" marker-end="url(#a)"/>
+  <text x="190" y="116" text-anchor="middle" style="font-weight:600">2. SYN-ACK</text>
+  <line x1="52" y1="168" x2="326" y2="192" stroke="var(--int)" stroke-width="2" marker-end="url(#a)"/>
+  <text x="190" y="168" text-anchor="middle" style="font-weight:600">3. ACK</text>
+</svg>
+<p class="m" style="margin-top:8px;color:var(--mute)">"Can we talk?" &#8594; "Yes, can you hear me?" &#8594; "Yes. Let's start." After this, data transfer begins.</p>
+</div>
+
+<h2>6. Example: opening a website</h2>
+<div class="card"><ol style="margin:0;padding-left:20px">
+<li><b>DNS</b> (application) converts <code>google.com</code> to an IP address.</li>
+<li><b>TCP</b> (transport) opens a connection with the 3-way handshake.</li>
+<li>The browser sends an <b>HTTP</b> request, split into segments.</li>
+<li><b>IP</b> (internet) routes the packets through routers to the server.</li>
+<li><b>Ethernet / Wi-Fi</b> (network access) carries the frames over each link.</li>
+<li>The server replies the same way, and TCP rebuilds the page in order.</li>
+</ol></div>
+
+<h2>7. Viva questions</h2>
+<div class="qa"><b>What is TCP/IP?</b>A 4-layer protocol suite that defines how data is sent across networks and the internet.</div>
+<div class="qa"><b>TCP vs UDP?</b>TCP is reliable, connection-oriented and slower. UDP is unreliable, connectionless and faster.</div>
+<div class="qa"><b>What is the 3-way handshake?</b>TCP connection setup using SYN, SYN-ACK and ACK.</div>
+<div class="qa"><b>What is encapsulation?</b>Each layer adds a header as data moves down. The receiver removes the headers (decapsulation) as data moves up.</div>
+<div class="qa"><b>IP address vs MAC address?</b>IP is a logical address used for routing between networks and can change. MAC is a physical hardware address used inside a local network.</div>
+<div class="qa"><b>What is a port number?</b>A 16-bit number that identifies an application or process (HTTP = 80, HTTPS = 443).</div>
+<div class="qa"><b>TCP/IP vs OSI?</b>TCP/IP has 4 layers and is the model actually used. OSI has 7 layers and is a theoretical reference model. OSI Application, Presentation and Session map to TCP/IP Application. OSI Data Link and Physical map to Network Access.</div>
+
+<div class="trick"><b>Memory trick (top to bottom):</b> <b>A</b>ll <b>T</b>CP <b>I</b>s <b>N</b>eeded = Application, Transport, Internet, Network access.</div>
+
+</main>
+</body>
+</html>
